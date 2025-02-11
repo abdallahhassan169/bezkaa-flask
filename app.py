@@ -26,8 +26,7 @@ def get_transcript(video_url):
         'writesubtitles': True,  # Fetch subtitles
         'writeautomaticsub': True,  # Fetch auto-generated subtitles
         'quiet': True,
-         'user_name':"sovghab@gmail.com",
-         "password":"11620000"
+        'cookiefile': 'cookie.txt'
     }
 
     try:
