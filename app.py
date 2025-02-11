@@ -82,6 +82,7 @@ def get_transcript_api(video_id):
         full_text = " ".join([t["text"] for t in transcript])
         return {"transcript": full_text}
     except Exception as e:
+        print(e)
         return {"error": str(e)}
 
 @app.route("/", methods=["GET"])

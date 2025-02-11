@@ -1,5 +1,5 @@
 Flask
-yt-dlp
+yt-dlp = 2025.1.26
 requests
 gunicorn
 youtube-transcript-api
