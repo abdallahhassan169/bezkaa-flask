@@ -79,7 +79,7 @@ def fetch_transcript_text(transcript_url):
 # Function to fetch transcript using youtube-transcript-api
 def get_transcript_api(video_id):
     try:
-        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en"])
+        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en"] , proxies={'http':'133.18.234.13:80'})
         full_text = " ".join([t["text"] for t in transcript])
         return {"transcript": full_text}
     except Exception as e:
