@@ -26,7 +26,7 @@ def get_transcript(video_url):
         'writesubtitles': True,  # Fetch subtitles
         'writeautomaticsub': True,  # Fetch auto-generated subtitles
         'quiet': True,
-         'proxy': '155.54.239.64:80'
+        #  'proxy': '155.54.239.64:80'
     }
 
     try:
