@@ -103,6 +103,7 @@ def transcript_dlp():
 @app.route("/transcript-api", methods=["GET"])
 def transcript_api():
     video_url = request.args.get("video_url")
+    
     if not video_url:
         return jsonify({"error": "Missing 'video_url' parameter"}), 400
     
