@@ -3,7 +3,8 @@ import yt_dlp
 import requests
 from youtube_transcript_api import YouTubeTranscriptApi
 from urllib.parse import urlparse, parse_qs
-
+import re
+import requests
 app = Flask(__name__)
 
 # Helper function to extract video ID from URL
@@ -26,7 +27,7 @@ def get_transcript(video_url):
         'writesubtitles': True,  # Fetch subtitles
         'writeautomaticsub': True,  # Fetch auto-generated subtitles
         'quiet': True,
-        #  'proxy': '155.54.239.64:80'
+        
     }
 
     try:
@@ -58,6 +59,7 @@ def get_transcript(video_url):
             return {"transcript": transcript_text, "original_language": original_lang}
 
     except Exception as e:
+        print(e)
         return {"error": str(e)}, 500
 
 # Helper function to fetch transcript text from URL
@@ -112,6 +114,52 @@ def transcript_api():
         return jsonify({"error": "Invalid YouTube URL"}), 400
 
     return jsonify(get_transcript_api(video_id))
+
+
+
+
+
+
+
+
+@app.route('/fetch_transcript', methods=['GET'])
+def fetch_transcripty():
+    try:
+        # Step 1: Get the video URL from the request parameters
+        url = request.args.get('url')
+        if not url:
+            return jsonify({"error": "URL parameter is required"}), 400
+
+        # Step 2: Make a GET request to the YouTube video page
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an error for bad responses
+
+        # Step 3: Extract all base URLs
+        transcript_urls = re.findall(r'"baseUrl":"(https:\/\/www\.youtube\.com\/api\/timedtext[^"]+)"', response.text)
+        
+        if transcript_urls:
+            # Step 4: Clean the URLs
+            cleaned_urls = [url.replace("\\u0026", "&") for url in transcript_urls]
+
+            # Step 5: Fetch the transcript from the first URL
+            transcript_response = requests.get(cleaned_urls[0] + "&fmt=json3")
+            transcript_response.raise_for_status()
+            transcript_data = transcript_response.json()
+
+            # Step 6: Extract the text segments
+            events = transcript_data.get("events", [])
+            text_segments = [seg["utf8"] for event in events for seg in event.get("segs", []) if "utf8" in seg]
+
+            # Combine all text segments
+            final_text = "".join(text_segments)
+
+            # Step 7: Return the extracted text
+            return jsonify({"transcript": final_text})
+        else:
+            return jsonify({"message": "No transcript URLs found."}), 404
+
+    except Exception as e:
+        return jsonify({"error": f"Error fetching transcript: {str(e)}"}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5020, debug=True)
