@@ -136,7 +136,7 @@ def fetch_transcripty():
 
         # Step 3: Extract all base URLs
         transcript_urls = re.findall(r'"baseUrl":"(https:\/\/www\.youtube\.com\/api\/timedtext[^"]+)"', response.text)
-        
+        return jsonify({"transcript": transcript_urls[0]})
         if transcript_urls:
             # Step 4: Clean the URLs
             cleaned_urls = [url.replace("\\u0026", "&") for url in transcript_urls]
