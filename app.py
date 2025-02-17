@@ -122,12 +122,14 @@ def transcript_api():
 
 
 
-
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
 @app.route('/fetch_transcript', methods=['GET'])
 def fetch_transcripty():
     try:
         # Step 1: Get the video URL from the request parameters
-        url = request.args.get('url')
+        url = request.args.get('url' , headers)
         if not url:
             return jsonify({"error": "URL parameter is required"}), 400
 
