@@ -6,6 +6,7 @@ from urllib.parse import urlparse, parse_qs
 import re
 import requests
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB
 
 # Helper function to extract video ID from URL
 def get_video_id(url):
